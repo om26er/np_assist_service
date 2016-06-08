@@ -34,7 +34,7 @@ class UserActivationView(APIView):
             return Response(data=message, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user_account = UserHelpers(email)
+            user_account = UserHelpers(email=email)
             if user_account.is_active():
                 return Response(
                     data={'email': ['Account already active.']},
