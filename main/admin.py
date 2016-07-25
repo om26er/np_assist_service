@@ -14,6 +14,10 @@ class UserAdmin(admin.ModelAdmin):
         'mobile_phone',
         'home_phone',
     )
+    readonly_fields = (
+        'email',
+        'password',
+    )
 
     class Meta:
         model = User
