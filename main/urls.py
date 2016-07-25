@@ -8,4 +8,8 @@ urlpatterns = [
     url(r'^api/activate$', main_views.ActivateAccount.as_view()),
     url(r'^api/me$', main_views.UserDetails.as_view()),
     url(r'^api/login$', main_views.Login.as_view()),
+    url(
+        r'^api/request-activation-key$',
+        main_views.RequestUserActivationKey.as_view()
+    )
 ]

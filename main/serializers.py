@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     mobile_phone = serializers.CharField(required=True)
-    home_phone = serializers.IntegerField(required=True)
+    home_phone = serializers.CharField(required=False)
 
     class Meta:
         model = User
