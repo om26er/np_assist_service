@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from main.models import User
+from main.models import Property, Service, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,10 +18,37 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'email',
             'password',
             'first_name',
             'last_name',
             'home_phone',
             'mobile_phone',
+        )
+
+
+class PropertySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Property
+        fields = (
+            'id',
+            'owner',
+            'address',
+            'postcode',
+            'category_primary',
+            'category_secondary',
+            'age',
+        )
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = (
+            'id',
+            'site',
+            'status',
+            'message',
+            'requester',
         )
