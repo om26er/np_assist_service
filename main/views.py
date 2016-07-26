@@ -1,74 +1,101 @@
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
 )
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import permissions
+from simple_login.views import (
+    AccountActivationAPIView,
+    RequestActivationKey,
+    LoginAPIView,
+    RetrieveUpdateDestroyProfileView,
+)
 
-from main.models import User
-from main.helpers.user_helpers import UserHelpers
-from main.helpers.response_helpers import ResponseConstructor
-from main.permissions import IsOwner
-from main.serializers import UserSerializer
+from main.models import (
+    Property,
+    Service,
+    User,
+    SERVICE_ACTIVE_STATES,
+)
+from main.serializers import (
+    PropertySerializer,
+    ServiceSerializer,
+    UserSerializer,
+)
 
 
-class UserRegistrationView(CreateAPIView):
+class Register(CreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserActivationView(APIView):
+class ActivateAccount(AccountActivationAPIView):
+    user_model = User
     serializer_class = UserSerializer
 
-    def _validate_parameters(self, email, activation_key):
-        response_constructor = ResponseConstructor()
-        response_constructor.validate_field('email', email)
-        response_constructor.validate_field('activation_key', activation_key)
-        return response_constructor.get_response()
+
+class RequestUserActivationKey(RequestActivationKey):
+    user_model = User
+
+
+class UserDetails(RetrieveUpdateDestroyProfileView):
+    user_model = User
+    serializer_class = UserSerializer
+
+
+class Login(LoginAPIView):
+    user_model = User
+    serializer_class = UserSerializer
+
+
+class ListCreateProperty(ListCreateAPIView):
+    serializer_class = PropertySerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        return Property.objects.filter(owner=self.request.user)
 
     def post(self, request, *args, **kwargs):
-        email = request.data.get('email')
-        activation_key = request.data.get('activation_key')
-        message = self._validate_parameters(email, activation_key)
-        if message:
-            return Response(data=message, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            user_account = UserHelpers(email=email)
-            if user_account.is_active():
-                return Response(
-                    data={'email': ['Account already active.']},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            if not user_account.is_activation_key_valid(activation_key):
-                return Response(
-                    data={'activation_key': ['Invalid.']},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            user_account.activate()
-            return Response(
-                data=user_account.get_serialized_data_with_auth_token(),
-                status=status.HTTP_200_OK,
-            )
-        except User.DoesNotExist:
-            return Response(
-                data={'email': ['Invalid email address.']},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        request.data.update({'owner': self.request.user.id})
+        return super().post(request, *args, **kwargs)
 
 
-class UserDetailsView(APIView):
-    permission_classes = (
-        permissions.IsAuthenticated,
-    )
+class RetrieveUpdateDestroyProperty(RetrieveUpdateDestroyAPIView):
+    serializer_class = PropertySerializer
+    permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request, *args, **kwargs):
-        try:
-            user_account = UserHelpers(id=self.request.user.id)
-            return Response(
-                data=user_account.get_serialized_data(),
-                status=status.HTTP_200_OK,
-            )
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    def get_queryset(self):
+        return Property.objects.filter(
+            id=self.kwargs['pk'],
+            owner=self.request.user
+        )
+
+
+class ListCreateServiceRequest(ListCreateAPIView):
+    serializer_class = ServiceSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        return Service.objects.filter(site__owner=self.request.user)
+
+
+class RetrieveUpdateDestroyServiceRequest(RetrieveUpdateDestroyAPIView):
+    serializer_class = ServiceSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        return Service.objects.filter(
+            id=self.kwargs['pk'],
+            site__owner=self.request.user
+        )
+
+
+class RetrieveActiveServiceRequests(ListAPIView):
+    serializer_class = ServiceSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get_queryset(self):
+        return Service.objects.filter(
+            site__owner=self.request.user,
+            status__in=SERVICE_ACTIVE_STATES
+        )
