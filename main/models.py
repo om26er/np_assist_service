@@ -24,6 +24,9 @@ class Property(models.Model):
     category_secondary = models.IntegerField(blank=False)
     age = models.IntegerField(blank=False)
 
+    def __str__(self):
+        return 'Property of {}'.format(self.owner.email)
+
 
 class Service(models.Model):
     site = models.ForeignKey(Property, blank=False, related_name='Property')
@@ -43,3 +46,6 @@ class Service(models.Model):
     @property
     def phone_number(self):
         return self.site.owner.mobile_phone
+
+    def __str__(self):
+        return '{} @ {}'.format(self.purpose, self.address)
