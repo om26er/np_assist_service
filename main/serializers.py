@@ -49,6 +49,10 @@ class ServiceSerializer(serializers.ModelSerializer):
             'id',
             'site',
             'status',
-            'message',
-            'requester',
+            'description',
+            'purpose',
+            'paid_for',
+            'requester_email',
+            'address',
+            'phone_number',
         )
