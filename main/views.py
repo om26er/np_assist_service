@@ -4,7 +4,7 @@ from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
-from rest_framework import permissions
+from rest_framework import permissions, response, status
 from simple_login.views import (
     AccountActivationAPIView,
     RequestActivationKey,
@@ -17,6 +17,7 @@ from main.models import (
     Service,
     User,
     SERVICE_ACTIVE_STATES,
+    SERVICE_STATUS_DONE,
 )
 from main.serializers import (
     PropertySerializer,
@@ -70,6 +71,16 @@ class RetrieveUpdateDestroyProperty(RetrieveUpdateDestroyAPIView):
             owner=self.request.user
         )
 
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            instance=self.get_object(),
+            data=self.request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ListCreateServiceRequest(ListCreateAPIView):
     serializer_class = ServiceSerializer
@@ -89,6 +100,16 @@ class RetrieveUpdateDestroyServiceRequest(RetrieveUpdateDestroyAPIView):
             site__owner=self.request.user
         )
 
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            instance=self.get_object(),
+            data=self.request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class RetrieveActiveServiceRequests(ListAPIView):
     serializer_class = ServiceSerializer
@@ -98,4 +119,15 @@ class RetrieveActiveServiceRequests(ListAPIView):
         return Service.objects.filter(
             site__owner=self.request.user,
             status__in=SERVICE_ACTIVE_STATES
+        )
+
+
+class ServiceHistory(ListAPIView):
+    serializer_class = ServiceSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Service.objects.filter(
+            site__owner=self.request.user,
+            status=SERVICE_STATUS_DONE
         )

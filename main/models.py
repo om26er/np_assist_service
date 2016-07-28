@@ -28,8 +28,18 @@ class Property(models.Model):
 class Service(models.Model):
     site = models.ForeignKey(Property, blank=False, related_name='Property')
     status = models.IntegerField(default=SERVICE_STATUS_PENDING, blank=False)
-    message = models.CharField(max_length=5000, blank=False)
+    description = models.CharField(max_length=5000, blank=False)
+    purpose = models.CharField(max_length=255, blank=False)
+    paid_for = models.BooleanField(default=False)
 
     @property
-    def requester(self):
-        return self.site.owner.id
+    def requester_email(self):
+        return self.site.owner.email
+
+    @property
+    def address(self):
+        return self.site.address
+
+    @property
+    def phone_number(self):
+        return self.site.owner.mobile_phone

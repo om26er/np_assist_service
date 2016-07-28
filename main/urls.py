@@ -22,6 +22,7 @@ urlpatterns = [
         r'^api/services/active$',
         main_views.RetrieveActiveServiceRequests.as_view()
     ),
+    url(r'^api/services/history', main_views.ServiceHistory.as_view()),
     url(
         r'^api/services/(?P<pk>\d+)$',
         main_views.RetrieveUpdateDestroyServiceRequest.as_view()
