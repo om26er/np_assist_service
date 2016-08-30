@@ -15,10 +15,11 @@ class User(BaseUser):
     last_name = models.CharField(max_length=255, blank=False)
     home_phone = models.CharField(max_length=255, blank=True)
     mobile_phone = models.CharField(max_length=255, blank=False)
+    default_property = models.OneToOneField('Property', blank=True, null=True)
 
 
 class Property(models.Model):
-    owner = models.ForeignKey(User, blank=False, related_name='Owner')
+    owner = models.ForeignKey('User', blank=False, related_name='Owner')
     address = models.CharField(max_length=2000, blank=False)
     postcode = models.CharField(max_length=255, blank=False)
     category_primary = models.CharField(max_length=255, blank=False)
