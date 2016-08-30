@@ -7,6 +7,7 @@ SERVICE_STATUS_IN_PROGRESS = 2
 SERVICE_STATUS_DONE = 3
 
 SERVICE_ACTIVE_STATES = [SERVICE_STATUS_PENDING, SERVICE_STATUS_IN_PROGRESS]
+STATUS_CHOICES = ((1, 'Pending'), (2, 'InProgress'), (3, 'Done'),)
 
 
 class User(BaseUser):
@@ -30,7 +31,8 @@ class Property(models.Model):
 
 class Service(models.Model):
     site = models.ForeignKey(Property, blank=False, related_name='Property')
-    status = models.IntegerField(default=SERVICE_STATUS_PENDING, blank=False)
+    status = models.IntegerField(
+        default=SERVICE_STATUS_PENDING, choices=STATUS_CHOICES, blank=False)
     description = models.CharField(max_length=5000, blank=False)
     purpose = models.CharField(max_length=255, blank=False)
     paid_for = models.BooleanField(default=False)
