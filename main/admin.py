@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from np_assist_service.main.models import User, Service
+from main.models import User, Service
 
 
 class UserAdmin(admin.ModelAdmin):
