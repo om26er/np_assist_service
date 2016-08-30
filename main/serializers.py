@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True)
     mobile_phone = serializers.CharField(required=True)
     home_phone = serializers.CharField(required=False)
+    default_property = serializers.IntegerField(required=False)
 
     class Meta:
         model = User
@@ -25,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'home_phone',
             'mobile_phone',
+            'default_property',
         )
 
 

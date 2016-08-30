@@ -13,10 +13,12 @@ class UserAdmin(admin.ModelAdmin):
         'last_name',
         'mobile_phone',
         'home_phone',
+        'default_property',
     )
     readonly_fields = (
         'email',
         'password',
+        'default_property',
     )
 
     class Meta:
