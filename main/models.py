@@ -20,8 +20,8 @@ class Property(models.Model):
     owner = models.ForeignKey(User, blank=False, related_name='Owner')
     address = models.CharField(max_length=2000, blank=False)
     postcode = models.CharField(max_length=255, blank=False)
-    category_primary = models.IntegerField(blank=False)
-    category_secondary = models.IntegerField(blank=False)
+    category_primary = models.CharField(max_length=255, blank=False)
+    category_secondary = models.CharField(max_length=255, blank=False)
     age = models.IntegerField(blank=False)
 
     def __str__(self):

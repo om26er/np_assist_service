@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from main.models import Property, Service, User
+from np_assist_service.main.models import Property, Service, User
 
 
 class UserSerializer(serializers.ModelSerializer):
