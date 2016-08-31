@@ -24,7 +24,7 @@ class Property(models.Model):
     postcode = models.CharField(max_length=255, blank=False)
     category_primary = models.CharField(max_length=255, blank=False)
     category_secondary = models.CharField(max_length=255, blank=False)
-    age = models.IntegerField(blank=False)
+    age = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
         return 'Property of {}'.format(self.owner.email)
