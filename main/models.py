@@ -36,6 +36,7 @@ class Service(models.Model):
         default=SERVICE_STATUS_PENDING, choices=STATUS_CHOICES, blank=False)
     description = models.CharField(max_length=5000, blank=False)
     purpose = models.CharField(max_length=255, blank=False)
+    price = models.CharField(max_length=255, blank=False)
     paid_for = models.BooleanField(default=False)
 
     @property

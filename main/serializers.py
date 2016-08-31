@@ -54,6 +54,7 @@ class ServiceSerializer(serializers.ModelSerializer):
             'description',
             'purpose',
             'paid_for',
+            'price',
             'requester_email',
             'address',
             'phone_number',
